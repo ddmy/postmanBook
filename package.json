@@ -12,9 +12,11 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "ant-design-vue": "^1.1.10",
+    "axios": "^0.19.0",
     "cross-env": "^5.2.0",
     "koa": "^2.6.2",
-    "ant-design-vue": "^1.1.10",
+    "koa-router": "^7.4.0",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {

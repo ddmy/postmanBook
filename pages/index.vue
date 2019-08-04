@@ -29,12 +29,22 @@
 </template>
 
 <script>
+import axios from 'axios'
 import Logo from '~/components/Logo.vue'
 
 export default {
   components: {
     Logo
-  }
+  },
+  created () {
+   this.getUsers()
+  },
+  methods: {
+    async getUsers () {
+      const result = await axios.get('/api/users')
+      console.log(result)
+    }
+  },
 }
 </script>
 
