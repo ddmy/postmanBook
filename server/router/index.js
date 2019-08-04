@@ -7,6 +7,6 @@ module.exports = (router, nuxt) => {
     ctx.req.ctx = ctx // This might be useful later on, e.g. in nuxtServerInit or with nuxt-stash
     nuxt.render(ctx.req, ctx.res)
   })
-
+  
   router.get('/api/users', api.users)
 }

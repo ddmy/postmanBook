@@ -41,7 +41,7 @@ export default {
   },
   methods: {
     async getUsers () {
-      const result = await axios.get('/api/users')
+      const result = await axios.get('/users')
       console.log(result)
     }
   },
