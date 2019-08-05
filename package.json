@@ -12,18 +12,25 @@
     "generate": "nuxt generate"
   },
   "dependencies": {
+    "ant-design-vue": "^1.1.10",
+    "axios": "^0.19.0",
     "cross-env": "^5.2.0",
     "koa": "^2.6.2",
-    "ant-design-vue": "^1.1.10",
+    "koa-bodyparser": "^2.5.0",
+    "koa-router": "^7.4.0",
+    "lodash": "^4.17.15",
     "nuxt": "^2.0.0"
   },
   "devDependencies": {
     "@vue/test-utils": "^1.0.0-beta.27",
     "ava": "^2.2.0",
     "browser-env": "^3.2.5",
+    "mysql": "^2.17.1",
+    "node-sass": "^4.12.0",
+    "nodemon": "^1.18.9",
     "require-extension-hooks": "^0.3.3",
     "require-extension-hooks-babel": "^1.0.0",
     "require-extension-hooks-vue": "^2.0.0",
-    "nodemon": "^1.18.9"
+    "sass-loader": "^7.1.0"
   }
 }
