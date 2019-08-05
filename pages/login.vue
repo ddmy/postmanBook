@@ -9,7 +9,7 @@
       <a-form-item>
         <a-input
           v-decorator="[
-            'userName',
+            'username',
             { rules: [{ required: true, message: '请输入账号!' }] }
           ]"
           placeholder="Username"
@@ -83,6 +83,11 @@ export default {
           console.log('Received values of form: ', values)
         }
         const result = await this.$api.user.login(values)
+        if (result.status === 200) {
+          this.$message.success(result.message)
+        } else {
+          this.$message.error(result.message)
+        }
       })
     }
   }

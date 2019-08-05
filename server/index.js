@@ -1,6 +1,7 @@
 const Koa = require('koa')
 const consola = require('consola')
 const { Nuxt, Builder } = require('nuxt')
+const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')
 const routerConfig = require('./router/')
 
@@ -28,7 +29,7 @@ async function start () {
     await nuxt.ready()
   }
 
-  
+  app.use(bodyParser())
   routerConfig(router, nuxt)
   app.use(router.routes())
   app.use(router.allowedMethods())  
