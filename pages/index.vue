@@ -6,7 +6,7 @@
         mom
       </h1>
       <h2 class="subtitle">
-        courier
+        {{ msg }}
       </h2>
       <div class="links">
         <a
@@ -30,19 +30,35 @@
 
 <script>
 import axios from 'axios'
+import _ from 'lodash'
 import Logo from '~/components/Logo.vue'
 
 export default {
   components: {
     Logo
   },
+  data () {
+    return {
+      msg: ''
+    }
+  },
   created () {
    this.getUsers()
   },
   methods: {
     async getUsers () {
-      const result = await axios.get('/users')
-      console.log(result)
+      const result = await this.$api.user.info()
+      if (result.status === 200) {
+        if (_.isEmpty(result.data)) {
+          this.$message.warning('请先登录！')
+          this.$router.push('login')
+        } else {
+          this.msg = result.data.info
+        }
+      } else {
+        let { message = '获取信息失败!' } = result.data
+        this.$message.error(message)
+      }
     }
   },
 }

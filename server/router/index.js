@@ -8,5 +8,6 @@ module.exports = (router, nuxt) => {
     nuxt.render(ctx.req, ctx.res)
   })
   
-  router.get('/api/users', api.users)
+  router.get('/api/user', api.users)
+  router.post('/api/login', api.login)
 }
