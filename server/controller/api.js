@@ -11,16 +11,19 @@ module.exports = {
     let { username, password } = ctx.request.body
     let sql = `SELECT * FROM users WHERE username = '${username}'`
     const result = await db.readMysql(sql)
-    let res = {
-      status: 200,
-      message: '登录成功!',
-      data: result[0]
-    }
+    let res = {}
     if (!result[0] || password !== result[0].password) {
       res = {
         status: 401,
         message: '账号或密码错误!',
         data: {}
+      }
+    } else {
+      ctx.session[result[0].uid] = result[0]
+      res = {
+        status: 200,
+        message: '登录成功!',
+        data: result[0]
       }
     }
     ctx.body = res
