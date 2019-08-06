@@ -85,6 +85,7 @@ export default {
         const result = await this.$api.user.login(values)
         if (result.status === 200) {
           this.$message.success(result.message)
+          this.$router.push('/')
         } else {
           this.$message.error(result.message)
         }
