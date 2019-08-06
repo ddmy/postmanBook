@@ -5,6 +5,7 @@ const bodyParser = require('koa-bodyparser')
 const Router = require('koa-router')
 const session = require('koa-session')
 const routerConfig = require('./router/')
+const isLogin = require('./middleware/isLogin')
 
 const app = new Koa()
 const router = new Router()
@@ -41,6 +42,8 @@ async function start () {
   } else {
     await nuxt.ready()
   }
+
+  app.use(isLogin)
 
   app.use(session(CONFIG, app))
 

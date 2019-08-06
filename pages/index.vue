@@ -53,7 +53,7 @@ export default {
           this.$message.warning('请先登录！')
           this.$router.push('login')
         } else {
-          this.msg = result.data.info
+          this.msg = result.data.nickname
         }
       } else {
         let { message = '获取信息失败!' } = result.data

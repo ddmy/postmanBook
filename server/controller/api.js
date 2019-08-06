@@ -3,8 +3,8 @@ module.exports = {
   users: ctx => {
     ctx.body = {
       status: 200,
-      message: '请先登录！',
-      data: {}
+      message: '',
+      data: ctx.session.uid
     }
   },
   login: async ctx => {
@@ -19,7 +19,7 @@ module.exports = {
         data: {}
       }
     } else {
-      ctx.session[result[0].uid] = result[0]
+      ctx.session.uid = result[0]
       res = {
         status: 200,
         message: '登录成功!',
