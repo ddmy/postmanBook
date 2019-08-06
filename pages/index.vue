@@ -9,20 +9,23 @@
         {{ msg }}
       </h2>
       <div class="links">
-        <a
-          href="https://nuxtjs.org/"
-          target="_blank"
-          class="button--green"
+        <a-button
+          type="primary"
+          @click="to('record')"
         >
-          Documentation
-        </a>
-        <a
-          href="https://github.com/nuxt/nuxt.js"
-          target="_blank"
-          class="button--grey"
+          记录
+        </a-button>
+        <a-button
+          type="primary"
+          @click="to('history')"
         >
-          GitHub
-        </a>
+          历史
+        </a-button>
+        <a-button
+          @click="logout"
+        >
+          退出登录
+        </a-button>
       </div>
     </div>
   </div>
@@ -51,13 +54,25 @@ export default {
       if (result.status === 200) {
         if (_.isEmpty(result.data)) {
           this.$message.warning('请先登录！')
-          this.$router.push('login')
+          this.to('login')
         } else {
           this.msg = result.data.nickname
         }
       } else {
         let { message = '获取信息失败!' } = result.data
         this.$message.error(message)
+      }
+    },
+    to (url) {
+      this.$router.push(url)
+    },
+    async logout () {
+      const result = await this.$api.user.logout()
+      if (result.status === 200) {
+        this.$message.success('您已退出登录!')
+        this.to('login')
+      } else {
+        this.$message.error('网络繁忙,请稍后再试!')
       }
     }
   },

@@ -27,5 +27,13 @@ module.exports = {
       }
     }
     ctx.body = res
+  },
+  logout: async ctx => {
+    ctx.session = null
+    ctx.body = {
+      status: 200,
+      message: '退出成功!',
+      data: {}
+    }
   }
 }
