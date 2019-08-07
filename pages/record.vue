@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="record-mian">
     <a-form
       :form="form"
       @submit="handleSubmit"
@@ -7,24 +7,62 @@
       <a-form-item
         label="选择快递"
       >
-        <a-radio-group v-decorator="['radio-group']">
-          <a-radio-button value="中通快递">
-            中通快递
-          </a-radio-button>
-          <a-radio-button value="德邦快递">
-            德邦快递
-          </a-radio-button>
-          <a-radio-button value="申通快递">
-            申通快递
+        <a-radio-group
+          v-decorator="[
+            'courier-name',
+             {
+               rules: [{
+                 required: true,
+                  message: '请选择快递名称'
+               }]
+             }
+          ]"
+          buttonStyle="solid"
+          @change="couriesChange"
+        >
+          <a-radio-button
+            v-for="item in couriersInfo"
+            :key="item.courier_id"
+            :value="item.courier_id"
+          >
+            {{ item.courier_name }}
           </a-radio-button>
         </a-radio-group>
       </a-form-item>
       <a-form-item
-        :wrapper-col="{ span: 12, offset: 5 }"
+        label="类型"
       >
+        <a-radio-group
+          v-decorator="[
+            'courier-size',
+            {
+              rules: [{ 
+                required: true,
+                message: '请选择快递大小'
+              }]
+            }
+          ]"
+          buttonStyle="solid"
+        >
+          <a-radio-button
+            value="1"
+            :disabled="!currentCourie.small"
+          >
+            小件
+          </a-radio-button>
+          <a-radio-button
+            value="2"
+            :disabled="!currentCourie.big"
+          >
+            大件
+          </a-radio-button>
+        </a-radio-group>
+      </a-form-item>
+      <a-form-item>
         <a-button
           type="primary"
           html-type="submit"
+          block
         >
           Submit
         </a-button>
@@ -38,7 +76,24 @@ export default {
   name: 'recode',
   data () {
     return {
-      form: this.$form.createForm(this)
+      form: this.$form.createForm(this),
+      couriersInfo: [],
+      currentCourieId: false
+    }
+  },
+  created () {
+    this.getCouriersList()
+  },
+  computed: {
+    currentCourie () {
+      let current = this.couriersInfo.find(v => v.courier_id === this.currentCourieId)
+      if (!this.currentCourieId || !current) {
+        return {
+          small: 1,
+          big: 1
+        }
+      }
+      return current
     }
   },
   methods: {
@@ -56,6 +111,24 @@ export default {
         note: `Hi, ${value === 'male' ? 'man' : 'lady'}!`
       });
     },
-  },
-};
+    async getCouriersList () {
+      const result = await this.$api.couriers.list()
+      console.log('result', result)
+      if (result.status === 200) {
+        this.couriersInfo = result.data.list
+      } else {
+        this.$message.error('网络繁忙,请稍后再试!')
+      }
+    },
+    couriesChange (e) {
+      this.currentCourieId = this.form.getFieldValue('courier-name')
+    }
+  }
+}
 </script>
+
+<style lang="scss" scoped>
+  .record-mian {
+    padding: 10px
+  }
+</style>

@@ -35,5 +35,17 @@ module.exports = {
       message: '退出成功!',
       data: {}
     }
+  },
+  couriersList: async ctx => {
+    let sql = 'SELECT * FROM couriers WHERE is_del != 1'
+    const result = await db.readMysql(sql)
+    let res = {
+      status: 200,
+      message: '',
+      data: {
+        list: result
+      }
+    }
+    ctx.body = res
   }
 }
