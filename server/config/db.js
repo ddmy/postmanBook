@@ -24,7 +24,6 @@ class db {
       return new Promise((resolve, reject) => {
         this.connection.query(sql, arr, (err, result) => {
           if (err) return reject(err)
-          console.log('db------------->', result)
           resolve(JSON.parse(JSON.stringify(result)))
         })
       })

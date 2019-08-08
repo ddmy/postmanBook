@@ -1,4 +1,5 @@
-const db = require('../config/db')
+const user = require('../models/user')
+const courier = require('../models/courier')
 const record = require('../models/record')
 module.exports = {
   users: ctx => {
@@ -9,9 +10,8 @@ module.exports = {
     }
   },
   login: async ctx => {
-    let { username, password } = ctx.request.body
-    let sql = `SELECT * FROM users WHERE username = '${username}'`
-    const result = await db.readMysql(sql)
+    const result = await user.login(ctx).catch(err => console.log(err))
+    let { password } = ctx.request.body
     let res = {}
     if (!result[0] || password !== result[0].password) {
       res = {
@@ -38,8 +38,7 @@ module.exports = {
     }
   },
   couriersList: async ctx => {
-    let sql = 'SELECT * FROM couriers WHERE is_del != 1'
-    const result = await db.readMysql(sql)
+    const result = await courier.couriersList().catch(err => console.log(err))
     let res = {
       status: 200,
       message: '',

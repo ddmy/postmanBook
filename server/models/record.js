@@ -1,4 +1,5 @@
 const db = require('../config/db')
+
 module.exports = {
   record: async ctx => {
     let { couriersName: couriersId, courierSize } = ctx.request.body
