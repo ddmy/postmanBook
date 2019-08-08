@@ -63,5 +63,13 @@ module.exports = {
         data: {}
       }
     }
+  },
+  history: async ctx => {
+    const result = await courier.history(ctx).catch(err => console.log(err))
+    ctx.body = {
+      status: 200,
+      message: '',
+      data: { list: result }
+    }
   }
 }
