@@ -1,4 +1,6 @@
-const db = require('../config/db')
+const user = require('../models/user')
+const courier = require('../models/courier')
+const record = require('../models/record')
 module.exports = {
   users: ctx => {
     ctx.body = {
@@ -8,9 +10,8 @@ module.exports = {
     }
   },
   login: async ctx => {
-    let { username, password } = ctx.request.body
-    let sql = `SELECT * FROM users WHERE username = '${username}'`
-    const result = await db.readMysql(sql)
+    const result = await user.login(ctx).catch(err => console.log(err))
+    let { password } = ctx.request.body
     let res = {}
     if (!result[0] || password !== result[0].password) {
       res = {
@@ -34,6 +35,33 @@ module.exports = {
       status: 200,
       message: '退出成功!',
       data: {}
+    }
+  },
+  couriersList: async ctx => {
+    const result = await courier.couriersList().catch(err => console.log(err))
+    let res = {
+      status: 200,
+      message: '',
+      data: {
+        list: result
+      }
+    }
+    ctx.body = res
+  },
+  record: async ctx => {
+    const result = await record.record(ctx)
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: '添加成功',
+        data: {}
+      }
+    } else {
+      ctx.body = {
+        status: 500,
+        message: '系统繁忙,请稍后再试!',
+        data: {}
+      }
     }
   }
 }

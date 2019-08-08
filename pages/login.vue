@@ -59,6 +59,7 @@
           type="primary"
           html-type="submit"
           class="login-form-button"
+          :loading="loading"
         >
           登录
         </a-button>
@@ -72,6 +73,12 @@
 
 <script>
 export default {
+  name: 'login',
+  data () {
+    return {
+      loading: false
+    }
+  },
   beforeCreate () {
     this.form = this.$form.createForm(this)
   },
@@ -80,14 +87,15 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
-        }
-        const result = await this.$api.user.login(values)
-        if (result.status === 200) {
-          this.$message.success(result.message)
-          this.$router.push('/')
-        } else {
-          this.$message.error(result.message)
+          this.loading = true
+          const result = await this.$api.user.login(values)
+          if (result.status === 200) {
+            this.$message.success(result.message)
+            this.$router.push('/')
+          } else {
+            this.$message.error(result.message)
+          }
+          this.loading = false
         }
       })
     }

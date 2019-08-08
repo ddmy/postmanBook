@@ -10,13 +10,22 @@ class db {
       database: 'courier'
     })
     db.connection(this.connection)
-    this.readMysql = async sql => {
-      return new Promise(async (resolve, reject) => {
+    // 查询
+    this.readMysql = sql => {
+      return new Promise((resolve, reject) => {
         this.connection.query(sql, (error, results, fields) => {
           if (error) return reject(error)
           resolve(JSON.parse(JSON.stringify(results)))
         })
-        // await db.end(this.connection)
+      })
+    }
+    // 写入
+    this.writeMySql = (sql, arr) => {
+      return new Promise((resolve, reject) => {
+        this.connection.query(sql, arr, (err, result) => {
+          if (err) return reject(err)
+          resolve(JSON.parse(JSON.stringify(result)))
+        })
       })
     }
   }
