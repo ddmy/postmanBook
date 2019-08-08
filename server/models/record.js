@@ -5,8 +5,9 @@ module.exports = {
     let { couriersName: couriersId, courierSize } = ctx.request.body
     let { uid } = ctx.session.uid
     let recorId = `R_${uid}_${getTime()}`
-    let sql = `INSERT INTO record ( record_id, courier_id, user_id, size ) VALUES (?, ?, ?, ?)`
-    const result = await db.writeMySql(sql, [recorId, couriersId, uid, courierSize]).catch(err => console.log(err))
+    let time = new Date().toLocaleString()
+    let sql = `INSERT INTO record ( record_id, courier_id, user_id, size, time ) VALUES (?, ?, ?, ?, ?)`
+    const result = await db.writeMySql(sql, [recorId, couriersId, uid, courierSize, time]).catch(err => console.log(err))
     return result
   }
 }
