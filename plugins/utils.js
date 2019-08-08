@@ -28,5 +28,27 @@ export default {
     var exp = new Date()
     exp.setTime(exp.getTime() + hours)
     document.cookie = name + '=' + escape(value) + ';expires=' + exp.toGMTString() + ';path=' + path + (domain ? `;domain=${domain}` : '')
+  },
+  // 时间戳
+  getTime () {
+    let time = new Date()
+    let str = time.getFullYear() +
+    this.getLenStr(time.getMonth()) +
+    this.getLenStr(time.getDate()) +
+    this.getLenStr(time.getHours()) +
+    this.getLenStr(time.getMinutes()) +
+    this.getLenStr(time.getSeconds()) +
+    this.getLenStr(time.getMilliseconds(), 3)
+    time = null
+    return str
+  },
+  // 获取指定长度字符串
+  getLenStr (str, len = 2, fill = '0', direction = 'padStart') {
+    str = String(str)
+    fill = String(fill)
+    if (!str.padStart) {
+      throw new Error('getLenStr params error!')
+    }
+    return str[direction](len, fill)
   }
 }

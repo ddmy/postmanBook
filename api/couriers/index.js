@@ -1,3 +1,4 @@
 export default axios => ({
-  list: _ => axios.post('/couriers/list')
+  list: _ => axios.post('/couriers/list'),
+  record: params => axios.post('/couriers/record', params)
 })

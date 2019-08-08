@@ -12,4 +12,5 @@ module.exports = (router, nuxt) => {
   router.post('/api/login', api.login)
   router.post('/api/logout', api.logout)
   router.post('/api/couriers/list', api.couriersList)
+  router.post('/api/couriers/record', api.record)
 }

@@ -1,4 +1,5 @@
 const db = require('../config/db')
+const record = require('../models/record')
 module.exports = {
   users: ctx => {
     ctx.body = {
@@ -47,5 +48,21 @@ module.exports = {
       }
     }
     ctx.body = res
+  },
+  record: async ctx => {
+    const result = await record.record(ctx)
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: '添加成功',
+        data: {}
+      }
+    } else {
+      ctx.body = {
+        status: 500,
+        message: '系统繁忙,请稍后再试!',
+        data: {}
+      }
+    }
   }
 }

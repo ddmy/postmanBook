@@ -62,6 +62,7 @@
         <a-button
           type="primary"
           html-type="submit"
+          :loading="loading"
           block
         >
           Submit
@@ -84,7 +85,8 @@ export default {
         2: 'big',
         small: 1,
         big: 2
-      }
+      },
+      loading: false
     }
   },
   created () {
@@ -110,9 +112,19 @@ export default {
   methods: {
     handleSubmit (e) {
       e.preventDefault()
-      this.form.validateFields((err, values) => {
+      this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.log('Received values of form: ', values)
+          this.loading = true
+          const result = await this.$api.couriers.record({
+            couriersName: values['courier-name'],
+            courierSize: values['courier-size']
+          })
+          if (result.status === 200) {
+            this.$message.success(result.message)
+          } else {
+            this.$message.error(result.message || '添加失败,请联系客服!')
+          }
+          this.loading = false
         }
       })
     },
