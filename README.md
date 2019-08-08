@@ -26,3 +26,8 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 ``` bash
 快递计件统计
 ```
+
+## 技术栈
+``` bash
+nuxt + axios + antDesigne + vue + vueRouter + koa + koa-session + node-mysql
+```
