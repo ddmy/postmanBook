@@ -45,13 +45,13 @@
           buttonStyle="solid"
         >
           <a-radio-button
-            value="1"
+            :value="courierSize.small"
             :disabled="!currentCourie.small"
           >
             小件
           </a-radio-button>
           <a-radio-button
-            value="2"
+            :value="courierSize.big"
             :disabled="!currentCourie.big"
           >
             大件
@@ -78,7 +78,13 @@ export default {
     return {
       form: this.$form.createForm(this),
       couriersInfo: [],
-      currentCourieId: false
+      currentCourieId: false,
+      courierSize: {
+        1: 'small',
+        2: 'big',
+        small: 1,
+        big: 2
+      }
     }
   },
   created () {
@@ -92,6 +98,11 @@ export default {
           small: 1,
           big: 1
         }
+      }
+      let courierSize = this.form.getFieldValue('courier-size')
+      // 如果当前选中的快递不支持对应的size
+      if (current[this.courierSize[courierSize]] === 0) {
+        this.form.resetFields('courier-size')
       }
       return current
     }
@@ -121,7 +132,7 @@ export default {
       }
     },
     couriesChange (e) {
-      this.currentCourieId = this.form.getFieldValue('courier-name')
+      this.currentCourieId = e.target.value
     }
   }
 }
