@@ -61,7 +61,7 @@ export default {
       if (result.status === 200) {
         this.historyData = result.data.list
       } else {
-        this.$message.error("获取历史记录失败,请稍后再试!")
+        this.$message.error(result.message || "获取历史记录失败,请稍后再试!")
       }
     }
   }

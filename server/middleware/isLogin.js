@@ -10,10 +10,11 @@ module.exports = async (ctx, next) => {
     !ctx.session.uid
   ) {
     ctx.body = {
-      status: 200,
+      status: 402,
       message: "请先登录！",
       data: {}
     }
+  } else {
+    await next()
   }
-  await next()
 }

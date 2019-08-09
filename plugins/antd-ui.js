@@ -6,6 +6,10 @@ import api from "@@/api"
 axios.defaults.baseURL = "/api"
 axios.interceptors.response.use(
   res => {
+    // 未登录
+    if (res.status === 402) {
+      location.href = "/login"
+    }
     return res.data
   },
   error => {
