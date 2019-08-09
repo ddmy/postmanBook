@@ -9,21 +9,13 @@
         {{ msg }}
       </h2>
       <div class="links">
-        <a-button
-          type="primary"
-          @click="to('record')"
-        >
+        <a-button type="primary" @click="to('record')">
           记录
         </a-button>
-        <a-button
-          type="primary"
-          @click="to('history')"
-        >
+        <a-button type="primary" @click="to('history')">
           历史
         </a-button>
-        <a-button
-          @click="logout"
-        >
+        <a-button @click="logout">
           退出登录
         </a-button>
       </div>
@@ -32,50 +24,50 @@
 </template>
 
 <script>
-import axios from 'axios'
-import _ from 'lodash'
-import Logo from '~/components/Logo.vue'
+import axios from "axios"
+import _ from "lodash"
+import Logo from "~/components/Logo.vue"
 
 export default {
   components: {
     Logo
   },
-  data () {
+  data() {
     return {
-      msg: ''
+      msg: ""
     }
   },
-  created () {
-   this.getUsers()
+  created() {
+    this.getUsers()
   },
   methods: {
-    async getUsers () {
+    async getUsers() {
       const result = await this.$api.user.info()
       if (result.status === 200) {
         if (_.isEmpty(result.data)) {
-          this.$message.warning('请先登录！')
-          this.to('login')
+          this.$message.warning("请先登录！")
+          this.to("login")
         } else {
           this.msg = result.data.nickname
         }
       } else {
-        let { message = '获取信息失败!' } = result.data
+        let { message = "获取信息失败!" } = result.data
         this.$message.error(message)
       }
     },
-    to (url) {
+    to(url) {
       this.$router.push(url)
     },
-    async logout () {
+    async logout() {
       const result = await this.$api.user.logout()
       if (result.status === 200) {
-        this.$message.success('您已退出登录!')
-        this.to('login')
+        this.$message.success("您已退出登录!")
+        this.to("login")
       } else {
-        this.$message.error('网络繁忙,请稍后再试!')
+        this.$message.error("网络繁忙,请稍后再试!")
       }
     }
-  },
+  }
 }
 </script>
 
@@ -90,8 +82,8 @@ export default {
 }
 
 .title {
-  font-family: 'Quicksand', 'Source Sans Pro', -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Quicksand", "Source Sans Pro", -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   display: block;
   font-weight: 300;
   font-size: 100px;

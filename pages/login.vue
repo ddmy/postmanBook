@@ -14,11 +14,7 @@
           ]"
           placeholder="Username"
         >
-          <a-icon
-            slot="prefix"
-            type="user"
-            style="color: rgba(0,0,0,.25)"
-          />
+          <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)" />
         </a-input>
       </a-form-item>
       <a-form-item>
@@ -30,11 +26,7 @@
           type="password"
           placeholder="Password"
         >
-          <a-icon
-            slot="prefix"
-            type="lock"
-            style="color: rgba(0,0,0,.25)"
-          />
+          <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)" />
         </a-input>
       </a-form-item>
       <a-form-item>
@@ -43,16 +35,13 @@
             'remember',
             {
               valuePropName: 'checked',
-              initialValue: true,
+              initialValue: true
             }
           ]"
         >
           记住账号
         </a-checkbox>
-        <a
-          class="login-form-forgot"
-          href=""
-        >
+        <a class="login-form-forgot" href="">
           忘记密码？
         </a>
         <a-button
@@ -63,7 +52,8 @@
         >
           登录
         </a-button>
-        Or <a href="">
+        Or
+        <a href="">
           注册账号!
         </a>
       </a-form-item>
@@ -73,17 +63,17 @@
 
 <script>
 export default {
-  name: 'login',
-  data () {
+  name: "Login",
+  data() {
     return {
       loading: false
     }
   },
-  beforeCreate () {
+  beforeCreate() {
     this.form = this.$form.createForm(this)
   },
   methods: {
-    handleSubmit (e) {
+    handleSubmit(e) {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
         if (!err) {
@@ -91,7 +81,7 @@ export default {
           const result = await this.$api.user.login(values)
           if (result.status === 200) {
             this.$message.success(result.message)
-            this.$router.push('/')
+            this.$router.push("/")
           } else {
             this.$message.error(result.message)
           }
@@ -105,7 +95,7 @@ export default {
 
 <style lang="scss" scoped>
 .login {
-  padding: 30px 20px
+  padding: 30px 20px;
 }
 #components-form-demo-normal-login .login-form {
   max-width: 300px;

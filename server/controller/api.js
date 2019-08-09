@@ -1,11 +1,11 @@
-const user = require('../models/user')
-const courier = require('../models/courier')
-const record = require('../models/record')
+const user = require("../models/user")
+const courier = require("../models/courier")
+const record = require("../models/record")
 module.exports = {
   users: ctx => {
     ctx.body = {
       status: 200,
-      message: '',
+      message: "",
       data: ctx.session.uid
     }
   },
@@ -16,14 +16,14 @@ module.exports = {
     if (!result[0] || password !== result[0].password) {
       res = {
         status: 401,
-        message: '账号或密码错误!',
+        message: "账号或密码错误!",
         data: {}
       }
     } else {
       ctx.session.uid = result[0]
       res = {
         status: 200,
-        message: '登录成功!',
+        message: "登录成功!",
         data: result[0]
       }
     }
@@ -33,7 +33,7 @@ module.exports = {
     ctx.session = null
     ctx.body = {
       status: 200,
-      message: '退出成功!',
+      message: "退出成功!",
       data: {}
     }
   },
@@ -41,7 +41,7 @@ module.exports = {
     const result = await courier.couriersList().catch(err => console.log(err))
     let res = {
       status: 200,
-      message: '',
+      message: "",
       data: {
         list: result
       }
@@ -53,13 +53,13 @@ module.exports = {
     if (result) {
       ctx.body = {
         status: 200,
-        message: '添加成功',
+        message: "添加成功",
         data: {}
       }
     } else {
       ctx.body = {
         status: 500,
-        message: '系统繁忙,请稍后再试!',
+        message: "系统繁忙,请稍后再试!",
         data: {}
       }
     }
@@ -68,7 +68,7 @@ module.exports = {
     const result = await courier.history(ctx).catch(err => console.log(err))
     ctx.body = {
       status: 200,
-      message: '',
+      message: "",
       data: { list: result }
     }
   }

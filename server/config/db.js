@@ -1,13 +1,13 @@
-const mysql = require('mysql')
+const mysql = require("mysql")
 
 class db {
-  constructor () {
+  constructor() {
     this.connection = mysql.createConnection({
-      host: 'cdb-38vry0rm.bj.tencentcdb.com',
-      user: 'root',
-      password: 'Cdd841312998',
-      port: '10136',
-      database: 'courier'
+      host: "cdb-38vry0rm.bj.tencentcdb.com",
+      user: "root",
+      password: "Cdd841312998",
+      port: "10136",
+      database: "courier"
     })
     db.connection(this.connection)
     // 查询
@@ -29,7 +29,7 @@ class db {
       })
     }
   }
-  static async connection (db) {
+  static async connection(db) {
     return new Promise((resolve, reject) => {
       db.connect(err => {
         if (err) {
@@ -39,7 +39,7 @@ class db {
       })
     })
   }
-  static async end (db) {
+  static async end(db) {
     return new Promise((resolve, reject) => {
       db.end(err => {
         if (err) {
