@@ -78,8 +78,10 @@ export default {
       this.form.validateFields(async (err, values) => {
         if (!err) {
           this.loading = true
-          const result = await this.$api.user.login(values)
-          if (result.status === 200) {
+          const result = await this.$api.user
+            .login(values)
+            .catch(err => console.error(err))
+          if (result && result.status === 200) {
             this.$message.success(result.message)
             this.$router.push("/")
           } else {

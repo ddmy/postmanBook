@@ -8,8 +8,17 @@ module.exports = {
   },
   history: async ctx => {
     let { uid } = ctx.session.uid
-    let sql = `SELECT a.*, b.courier_name FROM record a LEFT JOIN couriers b ON a.courier_id = b.courier_id WHERE a.user_id = ${uid}`
+    let { page = 1, pageSize = 10 } = ctx.request.body
+    let totalSql = `SELECT a.*, b.courier_name FROM record a LEFT JOIN couriers b ON a.courier_id = b.courier_id WHERE a.user_id =${uid}`
+    let total =  await db.readMysql(totalSql)
+    let sql = `SELECT a.*, b.courier_name FROM record a LEFT JOIN couriers b ON a.courier_id = b.courier_id WHERE a.user_id =${uid} ORDER BY time DESC LIMIT ${(page - 1) * pageSize}, ${pageSize}`
     const result = await db.readMysql(sql)
-    return result
+    return {
+      list: result,
+      // total: Math.ceil(total / pageSize),
+      total: total.length || 0,
+      page,
+      pageSize
+    }
   }
 }

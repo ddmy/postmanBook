@@ -69,7 +69,7 @@ module.exports = {
     ctx.body = {
       status: 200,
       message: "",
-      data: { list: result }
+      data: { ...result }
     }
   }
 }

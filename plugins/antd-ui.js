@@ -3,11 +3,14 @@ import Antd from "ant-design-vue/lib"
 import axios from "axios"
 import api from "@@/api"
 
+Vue.prototype.$api = api
+Vue.use(Antd)
+
 axios.defaults.baseURL = "/api"
 axios.interceptors.response.use(
   res => {
     // 未登录
-    if (res.status === 402) {
+    if (res.data.status === 402) {
       location.href = "/login"
     }
     return res.data
@@ -16,6 +19,3 @@ axios.interceptors.response.use(
     return Promise.reject(error)
   }
 )
-
-Vue.prototype.$api = api
-Vue.use(Antd)
