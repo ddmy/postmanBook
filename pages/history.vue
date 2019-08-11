@@ -68,11 +68,13 @@ export default {
         page,
         pageSize
       })
-      if (result.status === 200) {
+      if (result && result.status === 200) {
         this.historyData = result.data.list
         this.pagination.total = result.data.total
       } else {
-        this.$message.error(result.message || "获取历史记录失败,请稍后再试!")
+        this.$message.error(
+          result.message || "获取历史记录失败,请稍后再试![002]"
+        )
       }
       this.loading = false
     },

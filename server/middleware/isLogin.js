@@ -11,7 +11,7 @@ module.exports = async (ctx, next) => {
   ) {
     ctx.body = {
       status: 402,
-      message: "请先登录！",
+      message: "请先登录！[N001]",
       data: {}
     }
   } else {

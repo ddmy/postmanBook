@@ -45,17 +45,18 @@ export default {
       const result = await this.$api.user.info()
       if (result.status === 200) {
         if (_.isEmpty(result.data)) {
-          this.$message.warning("请先登录！")
+          console.log("未登录!跳转")
+          this.$message.warning(result.message || "请先登录！[001]")
           this.to("login")
         } else {
           this.msg = result.data.nickname
         }
       } else {
-        let { message = "获取信息失败!" } = result.data
-        this.$message.error(message)
+        this.$message.error(result.message || "获取信息失败!")
       }
     },
     to(url) {
+      console.log(`路由跳转去往: ${url}`)
       this.$router.push(url)
     },
     async logout() {
