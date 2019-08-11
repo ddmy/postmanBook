@@ -1,13 +1,48 @@
 <template>
   <div>
+    <a-button
+      v-if="visible"
+      class="to-home"
+      type="primary"
+      shape="circle"
+      icon="home"
+      :size="size"
+      @click="to('/')"
+    />
     <nuxt />
   </div>
 </template>
 
+<script>
+export default {
+  name: "DefaultLayout",
+  data() {
+    return {
+      size: "large",
+      visible: true,
+      visibleFalse: ["index", "login"]
+    }
+  },
+  watch: {
+    $route: function(newVal) {
+      this.visible = !this.visibleFalse.includes(newVal.name)
+    }
+  },
+  created() {
+    this.visible = !this.visibleFalse.includes(this.$route.name)
+  },
+  methods: {
+    to(url) {
+      this.$router.push(url)
+    }
+  }
+}
+</script>
+
 <style>
 html {
-  font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI',
-    Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: "Source Sans Pro", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
   font-size: 16px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
@@ -51,5 +86,14 @@ html {
 .button--grey:hover {
   color: #fff;
   background-color: #35495e;
+}
+.to-home {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 20px;
+  margin: auto 0;
+  opacity: 0.7;
+  z-index: 9999;
 }
 </style>

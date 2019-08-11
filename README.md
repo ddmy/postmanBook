@@ -29,5 +29,5 @@ For detailed explanation on how things work, check out [Nuxt.js docs](https://nu
 
 ## 技术栈
 ``` bash
-nuxt + axios + antDesigne + vue + vueRouter + koa + koa-session + node-mysql
+nuxt + axios + antDesigne + vue + vueRouter + koa + koa-session + node-mysql + eslint
 ```
