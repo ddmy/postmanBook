@@ -24,7 +24,6 @@
 </template>
 
 <script>
-import axios from "axios"
 import _ from "lodash"
 import Logo from "~/components/Logo.vue"
 
@@ -45,7 +44,6 @@ export default {
       const result = await this.$api.user.info()
       if (result.status === 200) {
         if (_.isEmpty(result.data)) {
-          console.log("未登录!跳转")
           this.$message.warning(result.message || "请先登录！[001]")
           this.to("login")
         } else {
@@ -56,7 +54,6 @@ export default {
       }
     },
     to(url) {
-      console.log(`路由跳转去往: ${url}`)
       this.$router.push(url)
     },
     async logout() {
