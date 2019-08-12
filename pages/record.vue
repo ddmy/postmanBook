@@ -55,6 +55,31 @@
           </a-radio-button>
         </a-radio-group>
       </a-form-item>
+      <a-form-item
+        label="签收照片"
+        extra="如有需要，可以选择上传快递签收证明照片"
+      >
+        <div class="clearfix">
+          <a-upload
+            v-decorator="['upload', {
+              valuePropName: 'fileList',
+              getValueFromEvent: normFile,
+            }]"
+            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+            listType="picture-card"
+            @preview="handlePreview"
+            @change="handleChange"
+          >
+            <div v-if="fileList.length < 3">
+              <a-icon type="plus" />
+              <div class="ant-upload-text">添加图片</div>
+            </div>
+          </a-upload>
+          <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+            <img alt="example" style="width: 100%" :src="previewImage" />
+          </a-modal>
+        </div>
+      </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit" :loading="loading" block>
           保存
@@ -78,7 +103,15 @@ export default {
         small: 1,
         big: 2
       },
-      loading: false
+      loading: false,
+      previewVisible: false,
+      previewImage: '',
+      fileList: [{
+        uid: '-1',
+        name: 'xxx.png',
+        status: 'done',
+        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
+      }],
     }
   },
   computed: {
@@ -108,6 +141,9 @@ export default {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
         if (!err) {
+          console.log(values)
+          const stsResult = await this.$api.user.sts()
+          console.log('sts------_>', stsResult)
           this.loading = true
           const result = await this.$api.couriers.record({
             couriersName: values["courier-name"],
@@ -139,7 +175,24 @@ export default {
     },
     couriesChange(e) {
       this.currentCourieId = e.target.value
-    }
+    },
+    handleCancel () {
+      this.previewVisible = false
+    },
+    handlePreview (file) {
+      this.previewImage = file.url || file.thumbUrl
+      this.previewVisible = true
+    },
+    handleChange ({ fileList }) {
+      this.fileList = fileList
+    },
+    normFile  (e) {
+      console.log('Upload event:', e);
+      if (Array.isArray(e)) {
+        return e;
+      }
+      return e && e.fileList;
+    },
   }
 }
 </script>

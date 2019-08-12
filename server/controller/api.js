@@ -71,5 +71,14 @@ module.exports = {
       message: "",
       data: { ...result }
     }
+  },
+  sts: async ctx => {
+    const result = await user.sts(ctx).catch(err => console.log(err))
+    console.log(result)
+    ctx.body = {
+      status: 200,
+      message: "",
+      data: result
+    }
   }
 }
