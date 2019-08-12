@@ -57,7 +57,7 @@
       </a-form-item>
       <a-form-item>
         <a-button type="primary" html-type="submit" :loading="loading" block>
-          Submit
+          保存
         </a-button>
       </a-form-item>
     </a-form>

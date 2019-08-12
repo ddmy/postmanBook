@@ -25,13 +25,17 @@ const columns = [
   {
     title: "时间",
     dataIndex: "time",
+    width: '150px',
     customRender: text => {
       return new Date(text).toLocaleString()
     }
   },
   {
-    title: "大小包",
-    dataIndex: "size"
+    title: "大小",
+    dataIndex: "size",
+    customRender: text => {
+      return text === 1 ? '小件' : '大件'
+    }
   },
   {
     title: "快递",
