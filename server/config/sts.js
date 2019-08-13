@@ -51,7 +51,7 @@ class GetStsToken {
       ]
     }
   }
-  static getToken() {
+  getToken() {
     return new Promise((resolve, reject) => {
       STS.getCredential(
         {
@@ -70,4 +70,4 @@ class GetStsToken {
   }
 }
 
-module.exports = GetStsToken
+module.exports = new GetStsToken()

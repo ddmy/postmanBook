@@ -63,12 +63,12 @@
           <a-upload
             v-decorator="['upload', {
               valuePropName: 'fileList',
-              getValueFromEvent: normFile,
+              getValueFromEvent: normFile
             }]"
-            action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
             listType="picture-card"
+            multiple
             @preview="handlePreview"
-            @change="handleChange"
+            :customRequest="toOss"
           >
             <div v-if="fileList.length < 3">
               <a-icon type="plus" />
@@ -90,6 +90,7 @@
 </template>
 
 <script>
+import COS from 'cos-js-sdk-v5'
 export default {
   name: "Recode",
   data() {
@@ -111,7 +112,7 @@ export default {
         name: 'xxx.png',
         status: 'done',
         url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }],
+      }]
     }
   },
   computed: {
@@ -142,21 +143,33 @@ export default {
       this.form.validateFields(async (err, values) => {
         if (!err) {
           console.log(values)
-          const stsResult = await this.$api.user.sts()
-          console.log('sts------_>', stsResult)
           this.loading = true
+          // 先验证是否有图片正在上传
+          if (!this.checkUploadIng()) {
+            this.$message.warning('请等待图片上传完成!')
+            this.loading = false
+            return false
+          }
           const result = await this.$api.couriers.record({
             couriersName: values["courier-name"],
-            courierSize: values["courier-size"]
+            courierSize: values["courier-size"],
+            upload: values["upload"].map(v => v.response.Location)
           })
           if (result.status === 200) {
             this.$message.success(result.message)
+            this.form.resetFields()
           } else {
             this.$message.error(result.message || "添加失败,请联系客服!")
           }
           this.loading = false
         }
       })
+    },
+    checkUploadIng () {
+      const upload = this.form.getFieldValue('upload')
+      if (!upload || upload.length === 0) return true
+      // 如果有未上传完成的图片返回false
+      return !upload.some(v => v.percent < 100)
     },
     handleSelectChange(value) {
       console.log(value)
@@ -183,9 +196,6 @@ export default {
       this.previewImage = file.url || file.thumbUrl
       this.previewVisible = true
     },
-    handleChange ({ fileList }) {
-      this.fileList = fileList
-    },
     normFile  (e) {
       console.log('Upload event:', e);
       if (Array.isArray(e)) {
@@ -193,6 +203,59 @@ export default {
       }
       return e && e.fileList;
     },
+    toOss ({
+          action,
+          data,
+          file,
+          filename,
+          headers,
+          onError,
+          onProgress,
+          onSuccess,
+          withCredentials,
+        }) {
+      const cos = new COS({
+        getAuthorization: async (options, callback) => {
+          const stsResult = await this.$api.user.sts()
+          if (stsResult.status === 200) {
+            callback({
+              TmpSecretId: stsResult.data.credentials && stsResult.data.credentials.tmpSecretId,
+              TmpSecretKey: stsResult.data.credentials && stsResult.data.credentials.tmpSecretKey,
+              XCosSecurityToken: stsResult.data.credentials && stsResult.data.credentials.sessionToken,
+              ExpiredTime: stsResult.data.expiredTime
+            })
+          } else {
+            this.$message.error('上传文件失败，请稍后再试！')
+          }
+        }
+      })
+      // 分片上传文件
+      cos.sliceUploadFile({
+          Bucket: 'fenglingdu-1259783871',
+          Region: 'ap-beijing',
+          Key: '/test/' + file.name,
+          Body: file,
+          onHashProgress: function (progressData) {
+              console.log('校验中', JSON.stringify(progressData));
+          },
+          onProgress: function (progressData) {
+              console.log('上传中', JSON.stringify(progressData));
+              onProgress(
+                {
+                  percent: Math.round((progressData.loaded /progressData.total * 100).toFixed(2))
+                },
+                file
+              )
+          },
+      }, function (err, data) {
+        if (!err) {
+          console.log(data)
+          onSuccess(data, file)
+        } else {
+          onError(err)
+        }
+      })
+    }
   }
 }
 </script>
