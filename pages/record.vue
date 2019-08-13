@@ -85,7 +85,7 @@
             :footer="null"
             @cancel="handleCancel"
           >
-            <img alt="example" style="width: 100%" :src="previewImage"  >
+            <img alt="example" style="width: 100%" :src="previewImage"/>
           </a-modal>
         </div>
       </a-form-item>
@@ -99,7 +99,6 @@
 </template>
 
 <script>
-import _ from "lodash"
 import { mapState } from "vuex"
 import COS from "cos-js-sdk-v5"
 
@@ -152,10 +151,6 @@ export default {
   },
   created() {
     this.getCouriersList()
-    if (_.isEmpty(this.userInfo)) {
-      this.$message.error("账户状态异常,请重新登录!")
-      this.$router.push("login")
-    }
   },
   methods: {
     handleSubmit(e) {
@@ -261,6 +256,7 @@ export default {
           Bucket: "fenglingdu-1259783871",
           Region: "ap-beijing",
           Key: `/test/user-${this.userInfo.uid}/${file.name}`,
+          // Key: `/test/user-${this.userInfo.uid}/${file.name}`,
           Body: file,
           onHashProgress: function(progressData) {
             console.log("校验中", JSON.stringify(progressData))

@@ -14,6 +14,9 @@
 </template>
 
 <script>
+import _ from "lodash"
+import { mapState, mapMutations } from "vuex"
+
 export default {
   name: "DefaultLayout",
   data() {
@@ -23,6 +26,9 @@ export default {
       visibleFalse: ["index", "login"]
     }
   },
+  computed: {
+    ...mapState(["userInfo"])
+  },
   watch: {
     $route: function(newVal) {
       this.visible = !this.visibleFalse.includes(newVal.name)
@@ -30,10 +36,23 @@ export default {
   },
   created() {
     this.visible = !this.visibleFalse.includes(this.$route.name)
+    if (_.isEmpty(this.userInfo)) {
+      this.getUserInfo()
+    }
   },
   methods: {
+    ...mapMutations(["setUserInfo"]),
     to(url) {
       this.$router.push(url)
+    },
+    async getUserInfo() {
+      const result = await this.$api.user.info()
+      if (result.status === 200) {
+        this.setUserInfo(result.data)
+      } else {
+        this.$message.error("账户状态异常,请重新登录!")
+        this.$router.push("login")
+      }
     }
   }
 }
