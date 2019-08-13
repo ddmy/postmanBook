@@ -25,6 +25,6 @@ module.exports = {
     "vue/max-attributes-per-line": "off",
     "prettier/prettier": ["error", { "semi": false }],
     "no-unused-vars": 1,
-    "require-atomic-updates": 1
+    "require-atomic-updates": 0
   }
 }

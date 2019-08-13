@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex"
+
 export default {
   name: "Login",
   data() {
@@ -73,6 +75,7 @@ export default {
     this.form = this.$form.createForm(this)
   },
   methods: {
+    ...mapMutations(["setUserInfo"]),
     handleSubmit(e) {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
@@ -83,6 +86,7 @@ export default {
             .catch(err => console.error(err))
           if (result && result.status === 200) {
             this.$message.success(result.message)
+            this.setUserInfo(result.data)
             this.$router.push("/")
           } else {
             this.$message.error(result.message)

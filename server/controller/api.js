@@ -74,11 +74,18 @@ module.exports = {
   },
   sts: async ctx => {
     const result = await user.sts(ctx).catch(err => console.log(err))
-    console.log(result)
-    ctx.body = {
-      status: 200,
-      message: "",
-      data: result
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: "",
+        data: result
+      }
+    } else {
+      ctx.body = {
+        status: 402,
+        message: "获取权限失败![N002]",
+        data: {}
+      }
     }
   }
 }

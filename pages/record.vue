@@ -61,22 +61,31 @@
       >
         <div class="clearfix">
           <a-upload
-            v-decorator="['upload', {
-              valuePropName: 'fileList',
-              getValueFromEvent: normFile
-            }]"
-            listType="picture-card"
+            v-decorator="[
+              'upload',
+              {
+                valuePropName: 'fileList',
+                getValueFromEvent: normFile
+              }
+            ]"
+            list-type="picture-card"
             multiple
+            :custom-request="toOss"
             @preview="handlePreview"
-            :customRequest="toOss"
           >
             <div v-if="fileList.length < 3">
               <a-icon type="plus" />
-              <div class="ant-upload-text">添加图片</div>
+              <div class="ant-upload-text">
+                添加图片
+              </div>
             </div>
           </a-upload>
-          <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
-            <img alt="example" style="width: 100%" :src="previewImage" />
+          <a-modal
+            :visible="previewVisible"
+            :footer="null"
+            @cancel="handleCancel"
+          >
+            <img alt="example" style="width: 100%" :src="previewImage"  >
           </a-modal>
         </div>
       </a-form-item>
@@ -90,7 +99,10 @@
 </template>
 
 <script>
-import COS from 'cos-js-sdk-v5'
+import _ from "lodash"
+import { mapState } from "vuex"
+import COS from "cos-js-sdk-v5"
+
 export default {
   name: "Recode",
   data() {
@@ -106,13 +118,16 @@ export default {
       },
       loading: false,
       previewVisible: false,
-      previewImage: '',
-      fileList: [{
-        uid: '-1',
-        name: 'xxx.png',
-        status: 'done',
-        url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-      }]
+      previewImage: "",
+      fileList: [
+        {
+          uid: "-1",
+          name: "xxx.png",
+          status: "done",
+          url:
+            "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+        }
+      ]
     }
   },
   computed: {
@@ -132,10 +147,15 @@ export default {
         this.form.resetFields("courier-size")
       }
       return current
-    }
+    },
+    ...mapState(["userInfo"])
   },
   created() {
     this.getCouriersList()
+    if (_.isEmpty(this.userInfo)) {
+      this.$message.error("账户状态异常,请重新登录!")
+      this.$router.push("login")
+    }
   },
   methods: {
     handleSubmit(e) {
@@ -146,7 +166,7 @@ export default {
           this.loading = true
           // 先验证是否有图片正在上传
           if (!this.checkUploadIng()) {
-            this.$message.warning('请等待图片上传完成!')
+            this.$message.warning("请等待图片上传完成!")
             this.loading = false
             return false
           }
@@ -165,8 +185,8 @@ export default {
         }
       })
     },
-    checkUploadIng () {
-      const upload = this.form.getFieldValue('upload')
+    checkUploadIng() {
+      const upload = this.form.getFieldValue("upload")
       if (!upload || upload.length === 0) return true
       // 如果有未上传完成的图片返回false
       return !upload.some(v => v.percent < 100)
@@ -189,72 +209,83 @@ export default {
     couriesChange(e) {
       this.currentCourieId = e.target.value
     },
-    handleCancel () {
+    handleCancel() {
       this.previewVisible = false
     },
-    handlePreview (file) {
+    handlePreview(file) {
       this.previewImage = file.url || file.thumbUrl
       this.previewVisible = true
     },
-    normFile  (e) {
-      console.log('Upload event:', e);
+    normFile(e) {
+      console.log("Upload event:", e)
       if (Array.isArray(e)) {
-        return e;
+        return e
       }
-      return e && e.fileList;
+      return e && e.fileList
     },
-    toOss ({
-          action,
-          data,
-          file,
-          filename,
-          headers,
-          onError,
-          onProgress,
-          onSuccess,
-          withCredentials,
-        }) {
+    toOss({
+      action,
+      data,
+      file,
+      filename,
+      headers,
+      onError,
+      onProgress,
+      onSuccess,
+      withCredentials
+    }) {
       const cos = new COS({
         getAuthorization: async (options, callback) => {
           const stsResult = await this.$api.user.sts()
           if (stsResult.status === 200) {
             callback({
-              TmpSecretId: stsResult.data.credentials && stsResult.data.credentials.tmpSecretId,
-              TmpSecretKey: stsResult.data.credentials && stsResult.data.credentials.tmpSecretKey,
-              XCosSecurityToken: stsResult.data.credentials && stsResult.data.credentials.sessionToken,
+              TmpSecretId:
+                stsResult.data.credentials &&
+                stsResult.data.credentials.tmpSecretId,
+              TmpSecretKey:
+                stsResult.data.credentials &&
+                stsResult.data.credentials.tmpSecretKey,
+              XCosSecurityToken:
+                stsResult.data.credentials &&
+                stsResult.data.credentials.sessionToken,
               ExpiredTime: stsResult.data.expiredTime
             })
           } else {
-            this.$message.error('上传文件失败，请稍后再试！')
+            this.$message.error("上传文件失败，请稍后再试！")
           }
         }
       })
       // 分片上传文件
-      cos.sliceUploadFile({
-          Bucket: 'fenglingdu-1259783871',
-          Region: 'ap-beijing',
-          Key: '/test/' + file.name,
+      cos.sliceUploadFile(
+        {
+          Bucket: "fenglingdu-1259783871",
+          Region: "ap-beijing",
+          Key: `/test/user-${this.userInfo.uid}/${file.name}`,
           Body: file,
-          onHashProgress: function (progressData) {
-              console.log('校验中', JSON.stringify(progressData));
+          onHashProgress: function(progressData) {
+            console.log("校验中", JSON.stringify(progressData))
           },
-          onProgress: function (progressData) {
-              console.log('上传中', JSON.stringify(progressData));
-              onProgress(
-                {
-                  percent: Math.round((progressData.loaded /progressData.total * 100).toFixed(2))
-                },
-                file
-              )
-          },
-      }, function (err, data) {
-        if (!err) {
-          console.log(data)
-          onSuccess(data, file)
-        } else {
-          onError(err)
+          onProgress: function(progressData) {
+            console.log("上传中", JSON.stringify(progressData))
+            onProgress(
+              {
+                percent: Math.round(
+                  ((progressData.loaded / progressData.total) * 100).toFixed(2)
+                )
+              },
+              file
+            )
+          }
+        },
+        function(err, data) {
+          if (!err) {
+            console.log(data)
+            onSuccess(data, file)
+          } else {
+            onError(err)
+          }
         }
-      })
+      )
     }
   }
 }
