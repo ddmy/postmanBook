@@ -14,7 +14,8 @@
         <a-tag v-for="tag in tags" :key="tag" color="blue">{{ tag }}</a-tag>
       </span>
       <span slot="action">
-        <a href="javascript:;">Delete</a>
+        <a-button type="primary" shape="circle" icon="search" size="small" />
+        <a-button type="danger" shape="circle" icon="delete" size="small" />
       </span>
     </a-table>
   </div>
@@ -25,7 +26,7 @@ const columns = [
   {
     title: "时间",
     dataIndex: "time",
-    width: '150px',
+    width: "100px",
     customRender: text => {
       return new Date(text).toLocaleString()
     }
@@ -34,7 +35,7 @@ const columns = [
     title: "大小",
     dataIndex: "size",
     customRender: text => {
-      return text === 1 ? '小件' : '大件'
+      return text === 1 ? "小件" : "大件"
     }
   },
   {
@@ -42,7 +43,9 @@ const columns = [
     dataIndex: "courier_name"
   },
   {
-    title: "操作"
+    title: "操作",
+    width: "90px",
+    scopedSlots: { customRender: "action" }
   }
 ]
 
