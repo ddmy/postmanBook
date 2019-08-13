@@ -2,13 +2,27 @@ const db = require("../config/db")
 
 module.exports = {
   record: async ctx => {
-    let { couriersName: couriersId, courierSize } = ctx.request.body
+    let {
+      couriersName: couriersId,
+      courierSize,
+      upload = []
+    } = ctx.request.body
     let { uid } = ctx.session.uid
     let recorId = `R_${uid}_${getTime()}`
     let time = new Date().toLocaleString()
-    let sql = `INSERT INTO record ( record_id, courier_id, user_id, size, time ) VALUES (?, ?, ?, ?, ?)`
+    let sql = `INSERT INTO record ( record_id, courier_id, user_id, size, time, image ) VALUES (?, ?, ?, ?, ?, ?)`
+    if (!Array.isArray(upload)) {
+      upload = [upload]
+    }
     const result = await db
-      .writeMySql(sql, [recorId, couriersId, uid, courierSize, time])
+      .writeMySql(sql, [
+        recorId,
+        couriersId,
+        uid,
+        courierSize,
+        time,
+        JSON.stringify(upload)
+      ])
       .catch(err => console.log(err))
     return result
   }
