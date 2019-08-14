@@ -28,5 +28,11 @@ module.exports = {
     let sql = `DELETE FROM record WHERE record_id = '${recordId}'`
     const result = await db.deleteMysql(sql)
     return result
+  },
+  detail: async ctx => {
+    let recordId = ctx.params.recordId
+    let sql = `SELECT * FROM record WHERE record_id = '${recordId}'`
+    const result = await db.readMysql(sql)
+    return result
   }
 }

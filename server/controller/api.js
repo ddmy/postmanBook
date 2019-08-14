@@ -91,7 +91,6 @@ module.exports = {
   deleteRecord: async ctx => {
     let recordId = ctx.params.recordId
     const result = await courier.deleteRecord(ctx)
-    console.log(result)
     if (result) {
       ctx.body = {
         status: 200,
@@ -102,6 +101,22 @@ module.exports = {
       ctx.body = {
         status: 403,
         message: "网路异常!请稍后再试",
+        data: {}
+      }
+    }
+  },
+  detail: async ctx => {
+    const result = await courier.detail(ctx)
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: "",
+        data: { ...result[0] }
+      }
+    } else {
+      ctx.body = {
+        status: 403,
+        message: "获取模板信息失败，请稍后再试!",
         data: {}
       }
     }

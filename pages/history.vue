@@ -99,7 +99,7 @@ export default {
       this.getHistory(pager.current, pager.pageSize)
     },
     async toDetial (recordId) {
-      console.log('recordId', recordId)
+      this.$router.push({ name: 'record-recordId', params: { recordId} })
     },
     async delRecord (recordId) {
       const _this = this
