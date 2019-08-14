@@ -9,7 +9,7 @@ module.exports = {
     return result
   },
   sts: async ctx => {
-    const result = await GetStsToken.getToken()
+    const result = await GetStsToken.getToken(ctx)
     return result
   }
 }

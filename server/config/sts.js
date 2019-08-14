@@ -51,7 +51,24 @@ class GetStsToken {
       ]
     }
   }
-  getToken() {
+  getToken(ctx) {
+    let userInfo = ctx.session.uid
+    if (userInfo && userInfo.uid) {
+      this.policy.statement[0].resource = [
+        "qcs::cos:" +
+          stsConfig.region +
+          ":uid/" +
+          appId +
+          ":prefix//" +
+          appId +
+          "/" +
+          shortBucketName +
+          "/users/user-" +
+          userInfo.uid +
+          "/" +
+          stsConfig.allowPrefix
+      ]
+    }
     return new Promise((resolve, reject) => {
       STS.getCredential(
         {

@@ -255,7 +255,7 @@ export default {
         {
           Bucket: "fenglingdu-1259783871",
           Region: "ap-beijing",
-          Key: `/test/user-${this.userInfo.uid}/${file.name}`,
+          Key: `/users/user-${this.userInfo.uid}/${file.name}`,
           // Key: `/test/user-${this.userInfo.uid}/${file.name}`,
           Body: file,
           onHashProgress: function(progressData) {

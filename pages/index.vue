@@ -6,7 +6,7 @@
         mom
       </h1>
       <h2 class="subtitle">
-        {{ msg }}
+        {{ userInfo.nickname }}
       </h2>
       <div class="links">
         <a-button type="primary" @click="to('record')">
@@ -25,6 +25,7 @@
 
 <script>
 import _ from "lodash"
+import { mapState } from "vuex"
 import Logo from "~/components/Logo.vue"
 
 export default {
@@ -36,23 +37,10 @@ export default {
       msg: ""
     }
   },
-  created() {
-    this.getUsers()
+  computed: {
+    ...mapState(["userInfo"])
   },
   methods: {
-    async getUsers() {
-      const result = await this.$api.user.info()
-      if (result.status === 200) {
-        if (_.isEmpty(result.data)) {
-          this.$message.warning(result.message || "请先登录！[001]")
-          this.to("login")
-        } else {
-          this.msg = result.data.nickname
-        }
-      } else {
-        this.$message.error(result.message || "获取信息失败!")
-      }
-    },
     to(url) {
       this.$router.push(url)
     },
