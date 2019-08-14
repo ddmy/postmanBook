@@ -52,7 +52,7 @@ const columns = [
   {
     title: "操作",
     width: "90px",
-    slots: { filterIcon: 'courier_name' },
+    slots: { filterIcon: "courier_name" },
     scopedSlots: { customRender: "action" }
   }
 ]
@@ -98,16 +98,16 @@ export default {
       this.pagination.current = pager.current
       this.getHistory(pager.current, pager.pageSize)
     },
-    async toDetial (recordId) {
-      this.$router.push({ name: 'record-recordId', params: { recordId} })
+    async toDetial(recordId) {
+      this.$router.push({ name: "record-recordId", params: { recordId } })
     },
-    async delRecord (recordId) {
+    async delRecord(recordId) {
       const _this = this
       this.$confirm({
-        title: '你确定要删除该记录吗?',
-        content: '删除该记录将永远无法找回该记录！',
-        okText: '确认',
-        cancelText: '取消',
+        title: "你确定要删除该记录吗?",
+        content: "删除该记录将永远无法找回该记录！",
+        okText: "确认",
+        cancelText: "取消",
         onOk() {
           _this.del()
         },
@@ -117,10 +117,10 @@ export default {
     async del(recordId) {
       const result = await this.$api.couriers.deleteRecord(recordId)
       if (result.status === 200) {
-        this.$message.success(result.message || '删除成功!')
+        this.$message.success(result.message || "删除成功!")
         this.getHistory()
       } else {
-        this.$message.error(result.message || '删除失败，请稍后再试!')
+        this.$message.error(result.message || "删除失败，请稍后再试!")
       }
     }
   }

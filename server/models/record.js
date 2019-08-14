@@ -10,24 +10,25 @@ module.exports = {
     } = ctx.request.body
     let { uid } = ctx.session.uid
     let recorId = `R_${uid}_${getTime()}`
-    let time = new Date().toLocaleString()
+    // let time = new Date().toLocaleString()
     let sql = ""
     if (!Array.isArray(upload)) {
       upload = [upload]
     }
     let result
     if (recordId) {
-      sql = `UPDATE record SET courier_id=${couriersId}, size=${courierSize}, image='${JSON.stringify(upload)}' WHERE record_id='${recordId}'`
+      sql = `UPDATE record SET courier_id=${couriersId}, size=${courierSize}, image='${JSON.stringify(
+        upload
+      )}' WHERE record_id='${recordId}'`
       result = await db.updateMysql(sql).catch(err => console.log(err))
     } else {
-      sql = `INSERT INTO record ( record_id, courier_id, user_id, size, time, image ) VALUES (?, ?, ?, ?, ?, ?)`
+      sql = `INSERT INTO record ( record_id, courier_id, user_id, size, time, image ) VALUES (?, ?, ?, ?, NOW(), ?)`
       result = await db
         .writeMySql(sql, [
           recorId,
           couriersId,
           uid,
           courierSize,
-          time,
           JSON.stringify(upload)
         ])
         .catch(err => console.log(err))
