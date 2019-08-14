@@ -87,5 +87,23 @@ module.exports = {
         data: {}
       }
     }
+  },
+  deleteRecord: async ctx => {
+    let recordId = ctx.params.recordId
+    const result = await courier.deleteRecord(ctx)
+    console.log(result)
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: "已删除!",
+        data: { recordId }
+      }
+    } else {
+      ctx.body = {
+        status: 403,
+        message: "网路异常!请稍后再试",
+        data: {}
+      }
+    }
   }
 }
