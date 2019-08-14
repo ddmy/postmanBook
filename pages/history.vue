@@ -8,14 +8,21 @@
       :pagination="pagination"
       @change="handleTableChange"
     >
-      <a slot="name" slot-scope="text" href="javascript:;">{{ text }}</a>
-      <span slot="customTitle"><a-icon type="smile-o" /> Name</span>
-      <span slot="tags" slot-scope="tags">
-        <a-tag v-for="tag in tags" :key="tag" color="blue">{{ tag }}</a-tag>
-      </span>
-      <span slot="action">
-        <a-button type="primary" shape="circle" icon="search" size="small" />
-        <a-button type="danger" shape="circle" icon="delete" size="small" />
+      <span slot="action" slot-scope="{ record_id }">
+        <a-button
+          type="primary"
+          shape="circle"
+          icon="search"
+          size="small"
+          @click="toDetial(record_id)"
+        />
+        <a-button
+          type="danger"
+          shape="circle"
+          icon="delete"
+          size="small"
+          @click="delRecord(record_id)"
+        />
       </span>
     </a-table>
   </div>
@@ -45,6 +52,7 @@ const columns = [
   {
     title: "操作",
     width: "90px",
+    slots: { filterIcon: 'courier_name' },
     scopedSlots: { customRender: "action" }
   }
 ]
@@ -89,6 +97,31 @@ export default {
       const pager = { ...pagination }
       this.pagination.current = pager.current
       this.getHistory(pager.current, pager.pageSize)
+    },
+    async toDetial (recordId) {
+      console.log('recordId', recordId)
+    },
+    async delRecord (recordId) {
+      const _this = this
+      this.$confirm({
+        title: '你确定要删除该记录吗?',
+        content: '删除该记录将永远无法找回该记录！',
+        okText: '确认',
+        cancelText: '取消',
+        onOk() {
+          _this.del()
+        },
+        onCancel() {}
+      })
+    },
+    async del(recordId) {
+      const result = await this.$api.couriers.deleteRecord(recordId)
+      if (result.status === 200) {
+        this.$message.success(result.message || '删除成功!')
+        this.getHistory()
+      } else {
+        this.$message.error(result.message || '删除失败，请稍后再试!')
+      }
     }
   }
 }

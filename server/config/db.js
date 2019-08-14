@@ -28,6 +28,7 @@ class db {
         })
       })
     }
+    this.deleteMysql = this.readMysql
   }
   static async connection(db) {
     return new Promise((resolve, reject) => {
