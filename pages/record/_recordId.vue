@@ -118,15 +118,8 @@ export default {
       loading: false,
       previewVisible: false,
       previewImage: "",
-      fileList: [
-        {
-          uid: "-1",
-          name: "xxx.png",
-          status: "done",
-          url:
-            "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-        }
-      ]
+      fileList: [],
+      recordId: null
     }
   },
   computed: {
@@ -151,13 +144,14 @@ export default {
   },
   created() {
     this.getCouriersList()
+    // 获取初始化参数
+    this.getRecordDetail()
   },
   methods: {
     handleSubmit(e) {
       e.preventDefault()
       this.form.validateFields(async (err, values) => {
         if (!err) {
-          console.log(values)
           this.loading = true
           // 先验证是否有图片正在上传
           if (!this.checkUploadIng()) {
@@ -168,11 +162,13 @@ export default {
           const result = await this.$api.couriers.record({
             couriersName: values["courier-name"],
             courierSize: values["courier-size"],
-            upload: values["upload"].map(v => v.response.Location)
+            upload: values["upload"].map(v => v.url || v.response.Location),
+            recordId: this.recordId ? this.recordId : ''
           })
           if (result.status === 200) {
             this.$message.success(result.message)
             this.form.resetFields()
+            this.$router.push('/record')
           } else {
             this.$message.error(result.message || "添加失败,请联系客服!")
           }
@@ -194,7 +190,6 @@ export default {
     },
     async getCouriersList() {
       const result = await this.$api.couriers.list()
-      console.log("result", result)
       if (result.status === 200) {
         this.couriersInfo = result.data.list
       } else {
@@ -214,8 +209,10 @@ export default {
     normFile(e) {
       console.log("Upload event:", e)
       if (Array.isArray(e)) {
+        this.fileList = e
         return e
       }
+      this.fileList = e.fileList
       return e && e.fileList
     },
     toOss({
@@ -282,6 +279,30 @@ export default {
           }
         }
       )
+    },
+    async getRecordDetail () {
+      this.recordId = this.$route.params.recordId || null
+      if (!this.recordId) return
+      const result = await this.$api.couriers.detail(this.recordId)
+      if (result.status === 200) {
+        this.form.setFieldsValue({
+          "courier-name": result.data.courier_id,
+          "courier-size": result.data.size
+        })
+        if (result.data.image) {
+          this.form.setFieldsValue({
+            upload: JSON.parse(result.data.image).map((v, i) => ({
+              uid:  -1 - i,
+              name: v.slice(v.lastIndexOf('/') + 1),
+              status: 'done',
+              url: '//' + v
+            }))
+          })
+        }
+      } else {
+        this.$message.error('该记录异常!')
+        this.$router.push('record')
+      }
     }
   }
 }

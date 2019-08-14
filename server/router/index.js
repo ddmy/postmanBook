@@ -16,4 +16,5 @@ module.exports = (router, nuxt) => {
   router.post("/api/couriers/history", api.history)
   router.post("/api/sts", api.sts)
   router.delete("/api/couriers/delete/:recordId", api.deleteRecord)
+  router.post("/api/couriers/detail/:recordId", api.detail)
 }
