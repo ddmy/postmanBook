@@ -1,14 +1,24 @@
+const config = require("../../config")
 const STS = require("qcloud-cos-sts")
 
+const {
+  secretId,
+  secretKey,
+  prox,
+  durationSeconds,
+  bucket,
+  region,
+  allowPrefix
+} = config.sts
 const stsConfig = {
-  secretId: "AKIDudBYsnCeeTcaN2f5VVLzd6P4Xq9NBRL5",
-  secretKey: "7EOYM8UzrbElBEAzjLmAYItMk2DHE1hD",
-  prox: "",
-  durationSeconds: 1800,
+  secretId,
+  secretKey,
+  prox,
+  durationSeconds,
   // 放行判断相关参数
-  bucket: "fenglingdu-1259783871",
-  region: "ap-beijing",
-  allowPrefix: "*"
+  bucket,
+  region,
+  allowPrefix
 }
 const shortBucketName = stsConfig.bucket.substr(
   0,

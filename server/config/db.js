@@ -1,12 +1,14 @@
+const config = require("../../config")
 const mysql = require("mysql")
 
 class db {
   constructor() {
+    const { host, user, password, port } = config.db
     this.connection = mysql.createConnection({
-      host: "cdb-38vry0rm.bj.tencentcdb.com",
-      user: "root",
-      password: "Cdd841312998",
-      port: "10136",
+      host,
+      user,
+      password,
+      port,
       database: "courier"
     })
     db.connection(this.connection)
