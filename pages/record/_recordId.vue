@@ -85,7 +85,7 @@
             :footer="null"
             @cancel="handleCancel"
           >
-            <img alt="example" style="width: 100%" :src="previewImage"/>
+            <img alt="example" style="width: 100%" :src="previewImage"  >
           </a-modal>
         </div>
       </a-form-item>

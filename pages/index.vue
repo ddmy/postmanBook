@@ -19,7 +19,7 @@
 
 <script>
 import _ from "lodash"
-import { mapState } from "vuex"
+import { mapState, mapMutations } from "vuex"
 import Logo from "~/components/Logo.vue"
 
 export default {
@@ -35,10 +35,12 @@ export default {
     ...mapState(["userInfo"])
   },
   methods: {
+    ...mapMutations(["setUserInfo"]),
     async logout() {
       const result = await this.$api.user.logout()
       if (result.status === 200) {
         this.$message.success("您已退出登录!")
+        this.setUserInfo({})
         this.$router.push("login")
       } else {
         this.$message.error("网络繁忙,请稍后再试!")

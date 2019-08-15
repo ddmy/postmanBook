@@ -75,6 +75,7 @@ export default {
       const result = await this.$api.user.logout()
       if (result.status === 200) {
         this.$message.success("您已退出登录!")
+        this.setUserInfo({})
         this.$router.push("login")
       } else {
         this.$message.error("网络繁忙,请稍后再试!")
