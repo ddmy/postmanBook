@@ -85,7 +85,7 @@
             :footer="null"
             @cancel="handleCancel"
           >
-            <img alt="example" style="width: 100%" :src="previewImage"/>
+            <img alt="example" style="width: 100%" :src="previewImage" >
           </a-modal>
         </div>
       </a-form-item>
@@ -99,6 +99,7 @@
 </template>
 
 <script>
+import _ from "lodash"
 import { mapState } from "vuex"
 import COS from "cos-js-sdk-v5"
 
@@ -162,13 +163,13 @@ export default {
           const result = await this.$api.couriers.record({
             couriersName: values["courier-name"],
             courierSize: values["courier-size"],
-            upload: values["upload"].map(v => v.url || v.response.Location),
-            recordId: this.recordId ? this.recordId : ''
+            upload: _.map(values["upload"], v => v.url || v.response.Location),
+            recordId: this.recordId ? this.recordId : ""
           })
           if (result.status === 200) {
             this.$message.success(result.message)
             this.form.resetFields()
-            this.$router.push('/record')
+            this.$router.push("/record")
           } else {
             this.$message.error(result.message || "添加失败,请联系客服!")
           }
@@ -280,7 +281,7 @@ export default {
         }
       )
     },
-    async getRecordDetail () {
+    async getRecordDetail() {
       this.recordId = this.$route.params.recordId || null
       if (!this.recordId) return
       const result = await this.$api.couriers.detail(this.recordId)
@@ -292,16 +293,16 @@ export default {
         if (result.data.image) {
           this.form.setFieldsValue({
             upload: JSON.parse(result.data.image).map((v, i) => ({
-              uid:  -1 - i,
-              name: v.slice(v.lastIndexOf('/') + 1),
-              status: 'done',
-              url: '//' + v
+              uid: -1 - i,
+              name: v.slice(v.lastIndexOf("/") + 1),
+              status: "done",
+              url: "//" + v
             }))
           })
         }
       } else {
-        this.$message.error('该记录异常!')
-        this.$router.push('record')
+        this.$message.error("该记录异常!")
+        this.$router.push("record")
       }
     }
   }
