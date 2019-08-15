@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="history-main">
     <a-table
       :columns="columns"
       :data-source="historyData"
@@ -126,3 +126,10 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+.history-main {
+  height: calc(100vh - 47px);
+  overflow: auto;
+}
+</style>

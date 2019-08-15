@@ -85,7 +85,7 @@
             :footer="null"
             @cancel="handleCancel"
           >
-            <img alt="example" style="width: 100%" :src="previewImage" >
+            <img alt="example" style="width: 100%" :src="previewImage"/>
           </a-modal>
         </div>
       </a-form-item>
@@ -312,5 +312,7 @@ export default {
 <style lang="scss" scoped>
 .record-mian {
   padding: 10px;
+  height: calc(100vh - 47px);
+  overflow: auto;
 }
 </style>

@@ -102,6 +102,8 @@ export default {
 <style lang="scss" scoped>
 .login {
   padding: 30px 20px;
+  height: calc(100vh - 47px);
+  overflow: auto;
 }
 #components-form-demo-normal-login .login-form {
   max-width: 300px;

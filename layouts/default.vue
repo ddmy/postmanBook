@@ -1,15 +1,33 @@
 <template>
   <div>
-    <a-button
-      v-if="visible"
-      class="to-home"
-      type="primary"
-      shape="circle"
-      icon="home"
-      :size="size"
-      @click="to('/')"
-    />
+    <a-menu v-model="current" mode="horizontal">
+      <a-menu-item key="index">
+        <router-link to="/">
+          <a-icon type="home" />
+          主页
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="record-recordId">
+        <router-link to="/record">
+          <a-icon type="edit" />
+          记录
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="history">
+        <router-link to="/history">
+          <a-icon type="clock-circle" />
+          历史
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="login" @click="logout">
+        <router-link to="/login">
+          <a-icon type="clock-circle" />
+          {{ isLogin ? "退出登录" : "登录" }}
+        </router-link>
+      </a-menu-item>
+    </a-menu>
     <nuxt />
+    <div />
   </div>
 </template>
 
@@ -22,20 +40,18 @@ export default {
   data() {
     return {
       size: "large",
-      visible: true,
-      visibleFalse: ["index", "login"]
+      current: []
     }
   },
   computed: {
-    ...mapState(["userInfo"])
-  },
-  watch: {
-    $route: function(newVal) {
-      this.visible = !this.visibleFalse.includes(newVal.name)
+    ...mapState(["userInfo"]),
+    isLogin() {
+      // 返回 true 表示 已登陆
+      return !_.isEmpty(this.userInfo)
     }
   },
   created() {
-    this.visible = !this.visibleFalse.includes(this.$route.name)
+    this.current.push(this.$route.name)
     if (_.isEmpty(this.userInfo)) {
       this.getUserInfo()
     }
@@ -53,6 +69,16 @@ export default {
         this.$message.error("账户状态异常,请重新登录!")
         this.$router.push("login")
       }
+    },
+    async logout() {
+      if (!this.isLogin) return
+      const result = await this.$api.user.logout()
+      if (result.status === 200) {
+        this.$message.success("您已退出登录!")
+        this.$router.push("login")
+      } else {
+        this.$message.error("网络繁忙,请稍后再试!")
+      }
     }
   }
 }
@@ -69,6 +95,8 @@ html {
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   box-sizing: border-box;
+  height: 100vh;
+  overflow: hidden;
 }
 
 *,

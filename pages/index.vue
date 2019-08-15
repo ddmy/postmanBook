@@ -9,12 +9,6 @@
         {{ userInfo.nickname }}
       </h2>
       <div class="links">
-        <a-button type="primary" @click="to('record')">
-          记录
-        </a-button>
-        <a-button type="primary" @click="to('history')">
-          历史
-        </a-button>
         <a-button @click="logout">
           退出登录
         </a-button>
@@ -41,14 +35,11 @@ export default {
     ...mapState(["userInfo"])
   },
   methods: {
-    to(url) {
-      this.$router.push(url)
-    },
     async logout() {
       const result = await this.$api.user.logout()
       if (result.status === 200) {
         this.$message.success("您已退出登录!")
-        this.to("login")
+        this.$router.push("login")
       } else {
         this.$message.error("网络繁忙,请稍后再试!")
       }
@@ -60,7 +51,8 @@ export default {
 <style>
 .container {
   margin: 0 auto;
-  min-height: 100vh;
+  height: calc(100vh - 47px);
+  overflow: auto;
   display: flex;
   justify-content: center;
   align-items: center;
