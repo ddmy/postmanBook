@@ -50,8 +50,13 @@ export default {
       return !_.isEmpty(this.userInfo)
     }
   },
+  watch: {
+    $route: function(newVla) {
+      this.current = [newVla.name]
+    }
+  },
   created() {
-    this.current.push(this.$route.name)
+    this.current = [this.$route.name]
     if (_.isEmpty(this.userInfo)) {
       this.getUserInfo()
     }
