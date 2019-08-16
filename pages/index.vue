@@ -8,7 +8,7 @@
       <h2 class="subtitle">
         {{ userInfo.nickname }}
       </h2>
-      <div class="links">
+      <div v-if="isLogin" class="links">
         <a-button @click="logout">
           退出登录
         </a-button>
@@ -32,7 +32,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(["userInfo"])
+    ...mapState(["userInfo"]),
+    isLogin() {
+      // 返回 true 表示 已登陆
+      return !_.isEmpty(this.userInfo)
+    }
   },
   methods: {
     ...mapMutations(["setUserInfo"]),
