@@ -19,10 +19,10 @@
           历史
         </router-link>
       </a-menu-item>
-      <a-menu-item key="login" @click="logout">
-        <router-link to="/login">
-          <a-icon type="clock-circle" />
-          {{ isLogin ? "退出登录" : "登录" }}
+      <a-menu-item key="statistics">
+        <router-link to="/statistics">
+          <a-icon type="line-chart" />
+          统计
         </router-link>
       </a-menu-item>
     </a-menu>
@@ -73,17 +73,6 @@ export default {
       } else {
         this.$message.error("账户状态异常,请重新登录!")
         this.$router.push("login")
-      }
-    },
-    async logout() {
-      if (!this.isLogin) return
-      const result = await this.$api.user.logout()
-      if (result.status === 200) {
-        this.$message.success("您已退出登录!")
-        this.setUserInfo({})
-        this.$router.push("login")
-      } else {
-        this.$message.error("网络繁忙,请稍后再试!")
       }
     }
   }
