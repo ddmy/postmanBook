@@ -120,5 +120,15 @@ module.exports = {
         data: {}
       }
     }
+  },
+  search: async ctx => {
+    const result = await courier.search(ctx).catch(err => console.log(err))
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: "",
+        data: { result }
+      }
+    }
   }
 }
