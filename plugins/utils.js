@@ -60,5 +60,20 @@ export default {
       throw new Error("getLenStr params error!")
     }
     return str[direction](len, fill)
+  },
+  // 获取两个时间之间的每一天
+  formatEveryDay(start, end) {
+    let dateList = []
+    let startTime = new Date(new Date(start).toLocaleDateString())
+    let endTime = new Date(new Date(end).toLocaleDateString())
+    console.log(startTime, endTime)
+    while (endTime.getTime() - startTime.getTime() >= 0) {
+      let year = startTime.getFullYear()
+      let month = this.getLenStr(startTime.getMonth() + 1)
+      let day = this.getLenStr(startTime.getDate())
+      dateList.push(year + "/" + month + "/" + day)
+      startTime.setDate(startTime.getDate() + 1)
+    }
+    return dateList
   }
 }
