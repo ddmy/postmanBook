@@ -36,14 +36,14 @@ module.exports = {
     return result
   },
   search: async ctx => {
-    let { sort = "last", courierId = [] } = ctx.request.body
+    let { sort = "last", courierId = [], day = 7 } = ctx.request.body
     let orderBy
     if (sort === "last") {
       orderBy = "DESC"
     } else if (sort === "first") {
       orderBy = "ASC"
     }
-    let sql = `SELECT a.*, b.courier_name FROM record a LEFT JOIN couriers b ON a.courier_id = b.courier_id WHERE a.courier_id IN (${courierId.join()}) AND time > date_add(now(), interval -2 DAY) ORDER BY time ${orderBy}`
+    let sql = `SELECT a.*, b.courier_name FROM record a LEFT JOIN couriers b ON a.courier_id = b.courier_id WHERE a.courier_id IN (${courierId.join()}) AND time > date_add(now(), interval -${day} DAY) ORDER BY time ${orderBy}`
     const result = await db.readMysql(sql)
     return result
   }

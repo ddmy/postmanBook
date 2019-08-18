@@ -1,70 +1,102 @@
 <template>
   <div class="statistics-main">
-    <div class="canva" ref="canva"></div>
+    <div ref="canva" class="canva" />
   </div>
 </template>
 
 <script>
-import echarts from 'echarts'
+import _ from "lodash"
+import echarts from "echarts"
+import utils from "../plugins/utils"
 export default {
-  name: "statistics",
+  name: "Statistics",
   data() {
     return {
       couriersInfo: [],
-      myChart: {}
+      couriersRecordList: {},
+      myChart: {},
+      days: 7
     }
   },
   computed: {
     options() {
       let title = {
-        text: '快递收入走势图'
+        text: "快递收入走势图"
       }
       let tooltip = {
-        trigger: 'axis'
+        trigger: "axis"
       }
       let legend = {
         data: this.couriersInfo.map(v => v.courier_name)
       }
       let grid = {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
+        left: "3%",
+        right: "4%",
+        bottom: "3%",
+        containLabel: true
       }
       let toolbox = {
-          feature: {
-              saveAsImage: {},
-              restore: {}
-          }
+        feature: {
+          saveAsImage: {},
+          restore: {}
+        }
       }
       let xAxis = {
-          type: 'category',
-          boundaryGap: false,
-          data: ['周一','周二','周三','周四','周五','周六','周日']
+        type: "category",
+        boundaryGap: false,
+        data: Object.keys(this.couriersRecordList)
       }
       let yAxis = {
-          type: 'value'
+        type: "value"
       }
-      let series = [
-          {
-              name:'邮件营销',
-              type:'line',
-              stack: '总量',
-              data:[120, 132, 101, 134, 90, 230, 210]
-          },
-          {
-              name:'视频广告',
-              type:'line',
-              stack: '总量',
-              data:[150, 232, 201, 154, 190, 330, 410]
-          },
-          {
-              name:'搜索引擎',
-              type:'line',
-              stack: '总量',
-              data:[820, 932, 901, 934, 1290, 1330, 1320]
-          }
-      ]
+      let series
+      series = this.couriersInfo.map(v => {
+        return {
+          name: v.courier_name,
+          type: "line",
+          stack: "单数",
+          data: []
+        }
+      })
+      for (let key in this.couriersRecordList) {
+        for (let n in this.couriersRecordList[key]) {
+          series.find(item => {
+            if (item.name === this.couriersRecordList[key][n].courier_name) {
+              item.data.push(this.couriersRecordList[key][n].count)
+              return true
+            }
+          })
+        }
+      }
+      // this.couriersRecordList.forEach(v => {
+      //   series.find(item => {
+      //     if (item.name === v.courier_name) {
+      //       item.data.push(v.count)
+      //       return true
+      //     }
+      //   })
+      // })
+      console.log(series)
+      // series = [
+      //   {
+      //     name: "邮件营销",
+      //     type: "line",
+      //     stack: "总量",
+      //     data: [120, 132, 101, 134, 90, 230, 210]
+      //   },
+      //   {
+      //     name: "视频广告",
+      //     type: "line",
+      //     stack: "总量",
+      //     data: [150, 232, 201, 154, 190, 330, 410]
+      //   },
+      //   {
+      //     name: "搜索引擎",
+      //     type: "line",
+      //     stack: "总量",
+      //     data: [820, 932, 901, 934, 1290, 1330, 1320]
+      //   }
+      // ]
       console.log(legend)
       return {
         title,
@@ -81,8 +113,7 @@ export default {
   created() {
     this.getCouriersList()
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     async getCouriersList() {
       const result = await this.$api.couriers.list()
@@ -98,13 +129,53 @@ export default {
     async getCouriersRecord() {
       const result = await this.$api.couriers.search({
         sort: "last",
-        courierId: this.couriersInfo.map(v => v.courier_id)
+        courierId: this.couriersInfo.map(v => v.courier_id),
+        day: this.days
       })
-      console.log(result)
+      this.filterData(result.data.list)
     },
     initCanva() {
       this.myChart = echarts.init(this.$refs.canva)
       this.myChart.setOption(this.options)
+    },
+    // 处理近n天的数据适用于echarts的格式
+    filterData(data) {
+      if (!Array.isArray(data))
+        return this.$message.error("数据异常,请联系客服!")
+      if (data.length === 0) return {}
+      const templateData = {}
+      this.couriersInfo.forEach(v => {
+        templateData[v.courier_id] = {
+          courier_name: v.courier_name,
+          courier_id: v.courier_id,
+          count: 0
+        }
+      })
+      const result = {}
+      let dayArr = data.map(v => new Date(v.time).getTime())
+      let maxDay = Math.max(...dayArr)
+      let minDay = Math.min(...dayArr)
+      dayArr = utils.formatEveryDay(minDay, maxDay)
+      dayArr.forEach(v => {
+        result[v] = _.cloneDeep(templateData)
+      })
+      data.forEach(v => {
+        let time = new Date(v.time)
+        let day = time
+          .toLocaleDateString()
+          .split("/")
+          .map(v => utils.getLenStr(v))
+          .join("/")
+
+        if (result[day]) {
+          result[day][v.courier_id].count += 1
+        } else {
+          console.error(`日期错误:${day}`)
+        }
+      })
+      this.couriersRecordList = result
+      console.log(this.couriersRecordList)
+      return result
     }
   }
 }
