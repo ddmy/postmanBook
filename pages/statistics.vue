@@ -15,99 +15,8 @@ export default {
       couriersInfo: [],
       couriersRecordList: {},
       myChart: {},
-      days: 7
-    }
-  },
-  computed: {
-    options() {
-      let title = {
-        text: "快递收入走势图"
-      }
-      let tooltip = {
-        trigger: "axis"
-      }
-      let legend = {
-        data: this.couriersInfo.map(v => v.courier_name)
-      }
-      let grid = {
-        left: "3%",
-        right: "4%",
-        bottom: "3%",
-        containLabel: true
-      }
-      let toolbox = {
-        feature: {
-          saveAsImage: {},
-          restore: {}
-        }
-      }
-      let xAxis = {
-        type: "category",
-        boundaryGap: false,
-        data: Object.keys(this.couriersRecordList)
-      }
-      let yAxis = {
-        type: "value"
-      }
-      let series
-      series = this.couriersInfo.map(v => {
-        return {
-          name: v.courier_name,
-          type: "line",
-          stack: "单数",
-          data: []
-        }
-      })
-      for (let key in this.couriersRecordList) {
-        for (let n in this.couriersRecordList[key]) {
-          series.find(item => {
-            if (item.name === this.couriersRecordList[key][n].courier_name) {
-              item.data.push(this.couriersRecordList[key][n].count)
-              return true
-            }
-          })
-        }
-      }
-      // this.couriersRecordList.forEach(v => {
-      //   series.find(item => {
-      //     if (item.name === v.courier_name) {
-      //       item.data.push(v.count)
-      //       return true
-      //     }
-      //   })
-      // })
-      console.log(series)
-      // series = [
-      //   {
-      //     name: "邮件营销",
-      //     type: "line",
-      //     stack: "总量",
-      //     data: [120, 132, 101, 134, 90, 230, 210]
-      //   },
-      //   {
-      //     name: "视频广告",
-      //     type: "line",
-      //     stack: "总量",
-      //     data: [150, 232, 201, 154, 190, 330, 410]
-      //   },
-      //   {
-      //     name: "搜索引擎",
-      //     type: "line",
-      //     stack: "总量",
-      //     data: [820, 932, 901, 934, 1290, 1330, 1320]
-      //   }
-      // ]
-      console.log(legend)
-      return {
-        title,
-        tooltip,
-        legend,
-        grid,
-        toolbox,
-        xAxis,
-        yAxis,
-        series
-      }
+      days: 7,
+      options: {}
     }
   },
   created() {
@@ -121,7 +30,6 @@ export default {
         this.couriersInfo = result.data.list
         // 获取所有快递的最近记录数据
         this.getCouriersRecord()
-        this.initCanva()
       } else {
         this.$message.error("网络繁忙,请稍后再试!")
       }
@@ -133,6 +41,9 @@ export default {
         day: this.days
       })
       this.filterData(result.data.list)
+      this.initOptions()
+      console.log(this.options)
+      this.initCanva()
     },
     initCanva() {
       this.myChart = echarts.init(this.$refs.canva)
@@ -174,8 +85,87 @@ export default {
         }
       })
       this.couriersRecordList = result
-      console.log(this.couriersRecordList)
+      console.log("this.couriersRecordList", this.couriersRecordList)
       return result
+    },
+    initOptions() {
+      let title = {
+        text: "快递收入走势图"
+      }
+      let tooltip = {
+        trigger: "axis"
+      }
+      let legend = {
+        data: this.couriersInfo.map(v => v.courier_name)
+      }
+      let grid = {
+        left: "3%",
+        right: "4%",
+        bottom: "3%",
+        containLabel: true
+      }
+      let toolbox = {
+        feature: {
+          saveAsImage: {},
+          restore: {}
+        }
+      }
+      let xAxis = {
+        type: "category",
+        boundaryGap: false,
+        data: Object.keys(this.couriersRecordList)
+      }
+      let yAxis = {
+        type: "value"
+      }
+      let series = {}
+      this.couriersInfo.forEach(v => {
+        series[v.courier_id] = {
+          name: v.courier_name,
+          type: "line",
+          stack: "单数",
+          data: []
+        }
+      })
+      for (let key in this.couriersRecordList) {
+        this.couriersInfo.forEach(v => {
+          series[v.courier_id].data.push(
+            this.couriersRecordList[key][v.courier_id].count
+          )
+        })
+      }
+      series = Object.values(series)
+      // series = [
+      //   {
+      //     name: "邮件营销",
+      //     type: "line",
+      //     stack: "总量",
+      //     data: [120, 132, 101, 134, 90, 230, 210]
+      //   },
+      //   {
+      //     name: "视频广告",
+      //     type: "line",
+      //     stack: "总量",
+      //     data: [150, 232, 201, 154, 190, 330, 410]
+      //   },
+      //   {
+      //     name: "搜索引擎",
+      //     type: "line",
+      //     stack: "总量",
+      //     data: [820, 932, 901, 934, 1290, 1330, 1320]
+      //   }
+      // ]
+      // console.log(legend)
+      this.options = {
+        title,
+        tooltip,
+        legend,
+        grid,
+        toolbox,
+        xAxis,
+        yAxis,
+        series
+      }
     }
   }
 }
