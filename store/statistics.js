@@ -1,18 +1,20 @@
 import api from "@@/api"
 
 export const state = () => ({
-  courierPrice: {}
+  courierPrice: []
 })
 
 export const mutations = {
-  add (state, text) {
-    state[text] = true
+  setCourierPrice(state, val) {
+    state.courierPrice = val
   }
 }
 
 export const actions = {
-  async getCourierPrice (state, data) {
-    const result = await api.user.info()
-    console.log(result)
+  async getCourierPrice({ state, commit }, data) {
+    const result = await api.couriers.price()
+    if (result.status === 200) {
+      commit("setCourierPrice", result.data.priceList)
+    }
   }
 }

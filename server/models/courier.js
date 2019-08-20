@@ -46,5 +46,10 @@ module.exports = {
     let sql = `SELECT a.*, b.courier_name FROM record a LEFT JOIN couriers b ON a.courier_id = b.courier_id WHERE a.courier_id IN (${courierId.join()}) AND time > date_add(now(), interval -${day} DAY) ORDER BY time ${orderBy}`
     const result = await db.readMysql(sql)
     return result
+  },
+  price: async ctx => {
+    let sql = "SELECT * from courier_price"
+    const result = await db.readMysql(sql)
+    return result
   }
 }
