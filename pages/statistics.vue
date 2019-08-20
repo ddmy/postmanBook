@@ -8,6 +8,7 @@
 import _ from "lodash"
 import echarts from "echarts"
 import utils from "../plugins/utils"
+import { mapState, mapMutations, mapActions } from 'vuex'
 export default {
   name: "Statistics",
   data() {
@@ -19,11 +20,15 @@ export default {
       options: {}
     }
   },
+  computed: {
+    ...mapState('statistics', ['courierPrice'])
+  },
   created() {
     this.getCouriersList()
   },
-  mounted() {},
   methods: {
+    ...mapMutations('statistics', ['add']),
+    ...mapActions('statistics', ['getCourierPrice']),
     async getCouriersList() {
       const result = await this.$api.couriers.list()
       if (result.status === 200) {
@@ -48,6 +53,8 @@ export default {
     initCanva() {
       this.myChart = echarts.init(this.$refs.canva)
       this.myChart.setOption(this.options)
+      this.add(100)
+      this.getCourierPrice('iooioouo')
     },
     // 处理近n天的数据适用于echarts的格式
     filterData(data) {
