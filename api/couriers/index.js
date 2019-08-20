@@ -4,5 +4,6 @@ export default axios => ({
   history: params => axios.post("/couriers/history", params),
   deleteRecord: recordId => axios.delete(`/couriers/delete/${recordId}`),
   detail: recordId => axios.post(`/couriers/detail/${recordId}`),
-  search: params => axios.post("/couriers/history/search", params)
+  search: params => axios.post("/couriers/history/search", params),
+  price: _ => axios.post("/couriers/price")
 })

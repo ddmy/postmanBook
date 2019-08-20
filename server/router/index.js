@@ -18,4 +18,6 @@ module.exports = (router, nuxt) => {
   router.delete("/api/couriers/delete/:recordId", api.deleteRecord)
   router.post("/api/couriers/detail/:recordId", api.detail)
   router.post("/api/couriers/history/search", api.search)
+  // 获取快递价格
+  router.post("/api/couriers/price", api.couriersPrice)
 }

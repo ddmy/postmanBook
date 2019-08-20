@@ -8,7 +8,8 @@
 import _ from "lodash"
 import echarts from "echarts"
 import utils from "../plugins/utils"
-import { mapState, mapMutations, mapActions } from 'vuex'
+import { mapState, mapMutations, mapActions } from "vuex"
+import { clearTimeout, setTimeout } from 'timers';
 export default {
   name: "Statistics",
   data() {
@@ -17,19 +18,34 @@ export default {
       couriersRecordList: {},
       myChart: {},
       days: 7,
-      options: {}
+      options: {},
+      timer: null
     }
   },
   computed: {
-    ...mapState('statistics', ['courierPrice'])
+    ...mapState("statistics", ["courierPrice"])
   },
   created() {
     this.getCouriersList()
   },
+  mounted() {
+    window.addEventListener('resize', () => {
+      if (_.isEmpty(this.myChart)) return
+      if (this.timer) {
+        clearTimeout(this.timer)
+        this.timer = null
+      }
+      this.timer = setTimeout(() => {
+        this.myChart.resize({
+          height: '400px'
+        })
+      }, 500)
+    })
+  },
   methods: {
-    ...mapMutations('statistics', ['add']),
-    ...mapActions('statistics', ['getCourierPrice']),
+    ...mapActions("statistics", ["getCourierPrice"]),
     async getCouriersList() {
+      await this.getCourierPrice()
       const result = await this.$api.couriers.list()
       if (result.status === 200) {
         this.couriersInfo = result.data.list
@@ -47,14 +63,11 @@ export default {
       })
       this.filterData(result.data.list)
       this.initOptions()
-      console.log(this.options)
       this.initCanva()
     },
     initCanva() {
       this.myChart = echarts.init(this.$refs.canva)
       this.myChart.setOption(this.options)
-      this.add(100)
-      this.getCourierPrice('iooioouo')
     },
     // 处理近n天的数据适用于echarts的格式
     filterData(data) {
@@ -86,13 +99,21 @@ export default {
           .join("/")
 
         if (result[day]) {
-          result[day][v.courier_id].count += 1
+          // 获取当前快递件的价格
+          let price = 0
+          let courier = this.courierPrice.find(item => item.courier_id === v.courier_id)
+          if (v.size === 1) {
+            price = courier.small
+          } else if (v.size === 2) {
+            price = courier.big
+          }
+          result[day][v.courier_id].count += price
+          result[day].size = v.size
         } else {
           console.error(`日期错误:${day}`)
         }
       })
       this.couriersRecordList = result
-      console.log("this.couriersRecordList", this.couriersRecordList)
       return result
     },
     initOptions() {
@@ -142,27 +163,6 @@ export default {
         })
       }
       series = Object.values(series)
-      // series = [
-      //   {
-      //     name: "邮件营销",
-      //     type: "line",
-      //     stack: "总量",
-      //     data: [120, 132, 101, 134, 90, 230, 210]
-      //   },
-      //   {
-      //     name: "视频广告",
-      //     type: "line",
-      //     stack: "总量",
-      //     data: [150, 232, 201, 154, 190, 330, 410]
-      //   },
-      //   {
-      //     name: "搜索引擎",
-      //     type: "line",
-      //     stack: "总量",
-      //     data: [820, 932, 901, 934, 1290, 1330, 1320]
-      //   }
-      // ]
-      // console.log(legend)
       this.options = {
         title,
         tooltip,

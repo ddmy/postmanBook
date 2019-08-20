@@ -130,5 +130,23 @@ module.exports = {
         data: { list: result }
       }
     }
+  },
+  couriersPrice: async ctx => {
+    const result = await courier.price(ctx).catch(err => console.log(err))
+    if (result) {
+      ctx.body = {
+        status: 200,
+        message: "",
+        data: {
+          priceList: result
+        }
+      }
+    } else {
+      ctx.body = {
+        status: 403,
+        message: "获取价格信息失败!",
+        data: {}
+      }
+    }
   }
 }
