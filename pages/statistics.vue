@@ -17,7 +17,7 @@ export default {
       couriersInfo: [],
       couriersRecordList: {},
       myChart: {},
-      days: 7,
+      days: 30,
       options: {},
       timer: null
     }
