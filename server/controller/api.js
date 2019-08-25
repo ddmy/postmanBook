@@ -13,7 +13,13 @@ module.exports = {
     const result = await user.login(ctx).catch(err => console.log(err))
     let { password } = ctx.request.body
     let res = {}
-    if (!result[0] || password !== result[0].password) {
+    if (!result || !result[0]) {
+      res = {
+        status: 500,
+        message: "内部错误!",
+        data: {}
+      }
+    } else if (password !== result[0].password) {
       res = {
         status: 401,
         message: "账号或密码错误!",

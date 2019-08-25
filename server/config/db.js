@@ -37,6 +37,7 @@ class db {
     return new Promise((resolve, reject) => {
       db.connect(err => {
         if (err) {
+          console.log("sql连接失败!")
           reject(err)
         }
         resolve(true)
