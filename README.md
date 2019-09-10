@@ -62,6 +62,13 @@ CREATE TABLE `record` (
   `image` varchar(510) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=127 DEFAULT CHARSET=utf8mb4;
+DROP TABLE IF EXISTS `courier_price`;
+CREATE TABLE `courier_price` (
+  `courier_id` int(11) NOT NULL,
+  `big` smallint(6) DEFAULT NULL,
+  `small` smallint(6) DEFAULT NULL,
+  PRIMARY KEY (`courier_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 ```
 
 For detailed explanation on how things work, check out [Nuxt.js docs](https://nuxtjs.org).
