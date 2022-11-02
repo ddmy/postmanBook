@@ -16,7 +16,7 @@
   "dependencies": {
     "ant-design-vue": "^1.1.10",
     "axios": "^0.19.0",
-    "cos-js-sdk-v5": "^0.5.17",
+    "cos-js-sdk-v5": "^1.4.10",
     "cross-env": "^5.2.0",
     "echarts": "^4.2.1",
     "koa": "^2.6.2",
